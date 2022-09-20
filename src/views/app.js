@@ -1,5 +1,8 @@
+const textInput = document.querySelector(`#text`);
+const fileInput = document.querySelector(`#file`);
 const resetBtn = document.querySelector(`#reset`);
 const eraserBtn = document.querySelector(`#eraser`);
+const saveBtn = document.querySelector(`#save`);
 const modeBtn = document.querySelector(`#paintMode`);
 const colorOption = Array.from(document.querySelectorAll(`.color-option`));
 const color = document.getElementById(`color`);
@@ -14,6 +17,7 @@ canvas.width = CANVAS_WIDTH;
 canvas.height = CANVAS_HEIGHT;
 
 ctx.lineWidth = lineWidth.value;
+ctx.lineCap = "round";
 
 let painting = false;
 let fillMode = false;
@@ -77,11 +81,42 @@ function onEraserClick() {
   modeBtn.innerText = "Fill";
 }
 
+function onFileChange(e) {
+  const file = e.target.files[0];
+  const url = URL.createObjectURL(file);
+  const img = new Image();
+  img.src = url;
+  img.onload = function () {
+    ctx.drawImage(img, 0, 0, CANVAS_WIDTH, CANVAS_HEIGHT);
+    fileInput.value = null;
+  };
+}
+
+function onDbClick(e) {
+  const text = textInput.value;
+  if (text !== "") {
+    ctx.save();
+    ctx.lineWidth = 1;
+    ctx.font = "50px 'Press Start 2P'";
+    ctx.fillText(text, e.offsetX, e.offsetY);
+    ctx.restore();
+  }
+}
+
+function onSaveImg() {
+  const url = canvas.toDataURL();
+  const a = document.createElement(`a`);
+  a.href = url;
+  a.download = `myMeme.png`;
+  a.click();
+}
+
 canvas.addEventListener(`mousemove`, onMove);
 canvas.addEventListener(`mousedown`, startPaint);
 canvas.addEventListener(`mouseup`, stopPaint);
 canvas.addEventListener(`mouseleave`, stopPaint);
 canvas.addEventListener(`click`, onCanvasClick);
+canvas.addEventListener(`dblclick`, onDbClick);
 
 lineWidth.addEventListener(`change`, onLineWidth);
 color.addEventListener(`change`, onColorRange);
@@ -92,3 +127,6 @@ colorOption.forEach((color) => {
 modeBtn.addEventListener(`click`, onModeClick);
 resetBtn.addEventListener(`click`, onResetClick);
 eraserBtn.addEventListener(`click`, onEraserClick);
+saveBtn.addEventListener(`click`, onSaveImg);
+
+fileInput.addEventListener(`change`, onFileChange);

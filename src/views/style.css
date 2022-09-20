@@ -1,3 +1,4 @@
+@import "reset.css";
 body {
   height: 100vh;
   display: flex;
