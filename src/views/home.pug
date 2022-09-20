@@ -7,10 +7,7 @@ html(lang="en")
         title Vancas
         link(rel="stylesheet" href="style.css")
     body    
-        canvas
-        input(id=`line-width` type=`range` min=`1` max=`10` value = `5` step=`0.1`)
-        input(type="color" id="color")
-        div
+        div(class="colors")
             div(class="color-option" style="background-color: #00a8ff" data-color="#00a8ff")
             div(class="color-option" style="background-color: #9c88ff" data-color="#9c88ff")
             div(class="color-option" style="background-color: #fbc531" data-color="#fbc531")
@@ -21,10 +18,15 @@ html(lang="en")
             div(class="color-option" style="background-color: #7f8fa6" data-color="#7f8fa6")
             div(class="color-option" style="background-color: #273c75" data-color="#273c75")
             div(class="color-option" style="background-color: #353b48" data-color="#353b48")
-        button(id="paintMode") Fill
-        button(id="reset") Reset
-        button(id="eraser") Eraser
-        input(type="file" accept="image/*" id="file")
-        input(type="text" placeholder="Write and Double Click" id="text")
-        button(id="save") Save
+        canvas
+        div(class="tools")
+            input(id=`line-width` type=`range` min=`1` max=`10` value = `5` step=`0.1`)
+            input(type="color" id="color")
+            button(id="paintMode") Fill
+            button(id="reset") Reset
+            button(id="eraser") Eraser
+            label(for="file") Add Photo
+                input(type="file" accept="image/*" id="file")
+            input(type="text" placeholder="Write and Double Click" id="text")
+            button(id="save") Save
         script(src="app.js")
