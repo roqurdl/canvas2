@@ -1,9 +1,15 @@
 const textInput = document.querySelector(`#text`);
 const fileInput = document.querySelector(`#file`);
-const resetBtn = document.querySelector(`#reset`);
+
+const penBtn = document.querySelector(`#penMode`);
+const fillBtn = document.querySelector(`#fillMode`);
+const brushBtn = document.querySelector(`#brushMode`);
+const squareBtn = document.querySelector(`#squareMode`);
+const circleBtn = document.querySelector(`#circleMode`);
 const eraserBtn = document.querySelector(`#eraser`);
+const resetBtn = document.querySelector(`#reset`);
 const saveBtn = document.querySelector(`#save`);
-const modeBtn = document.querySelector(`#paintMode`);
+
 const colorOption = Array.from(document.querySelectorAll(`.color-option`));
 const color = document.getElementById(`color`);
 const lineWidth = document.getElementById(`line-width`);
@@ -21,6 +27,7 @@ ctx.lineCap = "round";
 
 let painting = false;
 let fillMode = false;
+let mode = 0;
 
 function onMove(e) {
   if (painting) {
@@ -54,20 +61,9 @@ function onColorClick(e) {
   color.value = colorValue;
 }
 
-function onModeClick() {
-  if (fillMode) {
-    fillMode = false;
-    modeBtn.innerText = `Fill`;
-  } else {
-    fillMode = true;
-    modeBtn.innerText = `Draw`;
-  }
-}
-
-function onCanvasClick() {
-  if (fillMode) {
-    ctx.fillRect(0, 0, CANVAS_WIDTH, CANVAS_HEIGHT);
-  }
+function onCanvasClick(e) {
+  console.log(e);
+  // ctx.fillRect(0, 0, CANVAS_WIDTH, CANVAS_HEIGHT);
 }
 
 function onResetClick() {
@@ -77,8 +73,6 @@ function onResetClick() {
 
 function onEraserClick() {
   ctx.strokeStyle = "white";
-  fillMode = false;
-  modeBtn.innerText = "Fill";
 }
 
 function onFileChange(e) {
@@ -124,7 +118,12 @@ colorOption.forEach((color) => {
   color.addEventListener(`click`, onColorClick);
 });
 
-modeBtn.addEventListener(`click`, onModeClick);
+penBtn.addEventListener(`click`, onCanvasClick);
+fillBtn.addEventListener(`click`, onCanvasClick);
+brushBtn.addEventListener(`click`, onCanvasClick);
+squareBtn.addEventListener(`click`, onCanvasClick);
+circleBtn.addEventListener(`click`, onCanvasClick);
+
 resetBtn.addEventListener(`click`, onResetClick);
 eraserBtn.addEventListener(`click`, onEraserClick);
 saveBtn.addEventListener(`click`, onSaveImg);

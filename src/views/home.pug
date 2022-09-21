@@ -22,11 +22,22 @@ html(lang="en")
         canvas
         div(class="tools")
             input(id=`line-width` type=`range` min=`1` max=`10` value = `5` step=`0.1`)
-            button(id="paintMode") Fill
-            button(id="reset") Reset
+            button(id="penMode") pen
+            button(id="brushMode") brush
+            button(id="fillMode") fill
+            button(id="squareMode") square
+            button(id="circleMode") circle
             button(id="eraser") Eraser
+            button(id="reset") Reset
+            div(class="text-option")
+                select(name="font")
+                    option(value="serif") serif 
+                input(name="font-size" type="number" min="1" value ="5")
+                select(name="font-weight")
+                    option(value="solid") soild  
+            input(type="text" placeholder="Write and Double Click" id="text")
             label(for="file") Add Photo
                 input(type="file" accept="image/*" id="file")
-            input(type="text" placeholder="Write and Double Click" id="text")
             button(id="save") Save Image
         script(src="app.js")
+        script(src="https://kit.fontawesome.com/3e0004f16a.js" crossorigin="anonymous")
