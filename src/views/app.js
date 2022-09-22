@@ -1,6 +1,10 @@
+// Font Control
+const font = document.querySelector(`#font`);
+const fontSize = document.querySelector(`#font-size`);
+const fontType = document.querySelector(`#font-type`);
 const textInput = document.querySelector(`#text`);
-const fileInput = document.querySelector(`#file`);
 
+//toolBtns
 const penBtn = document.querySelector(`#penMode`);
 const fillBtn = document.querySelector(`#fillMode`);
 const brushBtn = document.querySelector(`#brushMode`);
@@ -8,6 +12,9 @@ const squareBtn = document.querySelector(`#squareMode`);
 const circleBtn = document.querySelector(`#circleMode`);
 const eraserBtn = document.querySelector(`#eraser`);
 const resetBtn = document.querySelector(`#reset`);
+
+//image files
+const fileInput = document.querySelector(`#file`);
 const saveBtn = document.querySelector(`#save`);
 
 const colorOption = Array.from(document.querySelectorAll(`.color-option`));
@@ -26,21 +33,40 @@ ctx.lineWidth = lineWidth.value;
 ctx.lineCap = "round";
 
 let painting = false;
-let fillMode = false;
 let mode = 0;
+let startX, startY;
+
+// mode 0:pen 1:brush 2:fill 3:square 4:circle 5:text
 
 function onMove(e) {
   if (painting) {
-    ctx.lineTo(e.offsetX, e.offsetY);
-    ctx.stroke();
+    switch (mode) {
+      case 0:
+      case 1:
+        ctx.lineTo(e.offsetX, e.offsetY);
+        ctx.stroke();
+        break;
+      case 3:
+        ctx.fillRect(startX, startY, e.offsetX - startX, e.offsetY - startY);
+        break;
+      case 4:
+        ctx.arc(startX, startY, e.offsetX - startX, 0, 2 * Math.PI);
+        ctx.fill();
+        break;
+    }
   }
-  ctx.beginPath();
   ctx.moveTo(e.offsetX, e.offsetY);
 }
-function startPaint() {
+function startPaint(e) {
   painting = true;
+  startX = e.offsetX;
+  startY = e.offsetY;
 }
 function stopPaint() {
+  ctx.beginPath();
+  if (mode === 1) {
+    ctx.fill();
+  }
   painting = false;
 }
 function onLineWidth(e) {
@@ -61,18 +87,15 @@ function onColorClick(e) {
   color.value = colorValue;
 }
 
-function onCanvasClick(e) {
-  console.log(e);
-  // ctx.fillRect(0, 0, CANVAS_WIDTH, CANVAS_HEIGHT);
+function onCanvasClick() {
+  if (mode === 2) {
+    ctx.fillRect(0, 0, CANVAS_WIDTH, CANVAS_HEIGHT);
+  }
 }
 
 function onResetClick() {
   ctx.fillStyle = "white";
   ctx.fillRect(0, 0, CANVAS_WIDTH, CANVAS_HEIGHT);
-}
-
-function onEraserClick() {
-  ctx.strokeStyle = "white";
 }
 
 function onFileChange(e) {
@@ -86,23 +109,47 @@ function onFileChange(e) {
   };
 }
 
-function onDbClick(e) {
-  const text = textInput.value;
-  if (text !== "") {
-    ctx.save();
-    ctx.lineWidth = 1;
-    ctx.font = "50px 'Press Start 2P'";
-    ctx.fillText(text, e.offsetX, e.offsetY);
-    ctx.restore();
-  }
-}
-
 function onSaveImg() {
   const url = canvas.toDataURL();
   const a = document.createElement(`a`);
   a.href = url;
   a.download = `myMeme.png`;
   a.click();
+}
+
+function onDbClick(e) {
+  const text = textInput.value;
+  if (text !== "") {
+    ctx.save();
+    ctx.lineWidth = 1;
+    console.log(ctx.font);
+    ctx.font = `solid 30px sanfi`;
+    ctx.fillText(text, e.offsetX, e.offsetY);
+    ctx.restore();
+  }
+}
+
+function onPenMode() {
+  mode = 0;
+}
+function onBrushMode() {
+  mode = 1;
+}
+function onfillMode() {
+  mode = 2;
+}
+function onSquareMode() {
+  mode = 3;
+}
+function onCircleMode() {
+  mode = 4;
+}
+function onEraserClick() {
+  ctx.strokeStyle = "white";
+}
+
+function onSizeChange() {
+  fontSize.value = fontSize.value;
 }
 
 canvas.addEventListener(`mousemove`, onMove);
@@ -118,14 +165,13 @@ colorOption.forEach((color) => {
   color.addEventListener(`click`, onColorClick);
 });
 
-penBtn.addEventListener(`click`, onCanvasClick);
-fillBtn.addEventListener(`click`, onCanvasClick);
-brushBtn.addEventListener(`click`, onCanvasClick);
-squareBtn.addEventListener(`click`, onCanvasClick);
-circleBtn.addEventListener(`click`, onCanvasClick);
-
-resetBtn.addEventListener(`click`, onResetClick);
+penBtn.addEventListener(`click`, onPenMode);
+fillBtn.addEventListener(`click`, onfillMode);
+brushBtn.addEventListener(`click`, onBrushMode);
+squareBtn.addEventListener(`click`, onSquareMode);
+circleBtn.addEventListener(`click`, onCircleMode);
 eraserBtn.addEventListener(`click`, onEraserClick);
-saveBtn.addEventListener(`click`, onSaveImg);
+resetBtn.addEventListener(`click`, onResetClick);
 
 fileInput.addEventListener(`change`, onFileChange);
+saveBtn.addEventListener(`click`, onSaveImg);
