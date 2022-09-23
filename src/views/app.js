@@ -122,8 +122,7 @@ function onDbClick(e) {
   if (text !== "") {
     ctx.save();
     ctx.lineWidth = 1;
-    console.log(ctx.font);
-    ctx.font = `solid 30px sanfi`;
+    ctx.font = `${fontSize.value}px ${fontType.value} ${font.value}`;
     ctx.fillText(text, e.offsetX, e.offsetY);
     ctx.restore();
   }
