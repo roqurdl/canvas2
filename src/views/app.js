@@ -17,6 +17,7 @@ const resetBtn = document.querySelector(`#reset`);
 const fileInput = document.querySelector(`#file`);
 const saveBtn = document.querySelector(`#save`);
 
+// color
 const colorOption = Array.from(document.querySelectorAll(`.color-option`));
 const color = document.getElementById(`color`);
 const lineWidth = document.getElementById(`line-width`);
@@ -36,13 +37,18 @@ let painting = false;
 let mode = 0;
 let startX, startY;
 
-// mode 0:pen 1:brush 2:fill 3:square 4:circle 5:text
+// mode 0:pen 1:brush 2:fill 3:square 4:circle 5:text 9:eraser
 
 function onMove(e) {
   if (painting) {
+    if (mode === 1) {
+      ctx.lineTo(e.offsetX, e.offsetY);
+      ctx.stroke();
+      return;
+    }
     switch (mode) {
       case 0:
-      case 1:
+      case 9:
         ctx.lineTo(e.offsetX, e.offsetY);
         ctx.stroke();
         break;
@@ -53,21 +59,26 @@ function onMove(e) {
         ctx.arc(startX, startY, e.offsetX - startX, 0, 2 * Math.PI);
         ctx.fill();
         break;
+      default:
+        ctx.moveTo(e.offsetX, e.offsetY);
     }
   }
   ctx.moveTo(e.offsetX, e.offsetY);
 }
 function startPaint(e) {
+  if (mode !== 9) {
+    ctx.restore();
+  }
   painting = true;
   startX = e.offsetX;
   startY = e.offsetY;
 }
 function stopPaint() {
-  ctx.beginPath();
+  painting = false;
   if (mode === 1) {
     ctx.fill();
   }
-  painting = false;
+  ctx.beginPath();
 }
 function onLineWidth(e) {
   ctx.lineWidth = e.target.value;
@@ -94,8 +105,10 @@ function onCanvasClick() {
 }
 
 function onResetClick() {
+  ctx.save();
   ctx.fillStyle = "white";
   ctx.fillRect(0, 0, CANVAS_WIDTH, CANVAS_HEIGHT);
+  ctx.restore();
 }
 
 function onFileChange(e) {
@@ -144,6 +157,8 @@ function onCircleMode() {
   mode = 4;
 }
 function onEraserClick() {
+  ctx.save();
+  mode = 9;
   ctx.strokeStyle = "white";
 }
 
